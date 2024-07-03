@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: api-gateway
+  security:
+    user:
+      name: apiuser
+      password: apipassword
+
+  cloud:
+    gateway:
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/users/**
+        - id: booking-service
+          uri: lb://booking-service
+          predicates:
+            - Path=/bookings/**
+        - id: payment-service
+          uri: lb://payment-service
+          predicates:
+            - Path=/payments/**
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/notifications/**
+
+      discovery:
+        locator:
+          enabled: true
+
+  main:
+    web-application-type: reactive  # Set to reactive for Spring Cloud Gateway
+
+  datasource:
+    url: jdbc:h2:mem:testdb  # H2 in-memory database
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+    h2:
+      console:
+        enabled: true  # Enable H2 console for debugging (optional)
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
